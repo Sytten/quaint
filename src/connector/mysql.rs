@@ -54,9 +54,6 @@ impl MysqlUrl {
         match percent_decode(self.url.username().as_bytes()).decode_utf8() {
             Ok(username) => username,
             Err(_) => {
-                #[cfg(not(feature = "tracing-log"))]
-                warn!("Couldn't decode username to UTF-8, using the non-decoded version.");
-                #[cfg(feature = "tracing-log")]
                 tracing::warn!("Couldn't decode username to UTF-8, using the non-decoded version.");
 
                 self.url.username().into()
@@ -182,12 +179,6 @@ impl MysqlUrl {
                         }
                         "accept_invalid_certs" => {}
                         _ => {
-                            #[cfg(not(feature = "tracing-log"))]
-                            debug!(
-                                "Unsupported SSL accept mode {}, defaulting to `accept_invalid_certs`",
-                                v
-                            );
-                            #[cfg(feature = "tracing-log")]
                             tracing::debug!(
                                 message = "Unsupported SSL accept mode, defaulting to `accept_invalid_certs`",
                                 mode = &*v
@@ -196,9 +187,6 @@ impl MysqlUrl {
                     };
                 }
                 _ => {
-                    #[cfg(not(feature = "tracing-log"))]
-                    trace!("Discarding connection string param: {}", k);
-                    #[cfg(feature = "tracing-log")]
                     tracing::trace!(message = "Discarding connection string param", param = &*k);
                 }
             };
@@ -259,6 +247,7 @@ pub(crate) struct MysqlUrlQueryParams {
 
 impl Mysql {
     /// Create a new MySQL connection using `OptsBuilder` from the `mysql` crate.
+    #[tracing::instrument(name = "new_connection", skip(url))]
     pub async fn new(url: MysqlUrl) -> crate::Result<Self> {
         let conn = super::timeout::connect(url.connect_timeout(), my::Conn::new(url.to_opts_builder())).await?;
 
@@ -274,16 +263,19 @@ impl TransactionCapable for Mysql {}
 
 #[async_trait]
 impl Queryable for Mysql {
+    #[tracing::instrument(skip(self, q))]
     async fn query(&self, q: Query<'_>) -> crate::Result<ResultSet> {
         let (sql, params) = visitor::Mysql::build(q)?;
         self.query_raw(&sql, &params).await
     }
 
+    #[tracing::instrument(skip(self, q))]
     async fn execute(&self, q: Query<'_>) -> crate::Result<u64> {
         let (sql, params) = visitor::Mysql::build(q)?;
         self.execute_raw(&sql, &params).await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn query_raw(&self, sql: &str, params: &[Value<'_>]) -> crate::Result<ResultSet> {
         metrics::query("mysql.query_raw", sql, params, move || async move {
             let mut conn = self.conn.lock().await;
@@ -310,6 +302,7 @@ impl Queryable for Mysql {
         .await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn execute_raw(&self, sql: &str, params: &[Value<'_>]) -> crate::Result<u64> {
         metrics::query("mysql.execute_raw", sql, params, move || async move {
             let mut conn = self.conn.lock().await;
@@ -325,6 +318,7 @@ impl Queryable for Mysql {
         .await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn raw_cmd(&self, cmd: &str) -> crate::Result<()> {
         metrics::query("mysql.raw_cmd", cmd, &[], move || async move {
             let mut conn = self.conn.lock().await;
@@ -351,6 +345,7 @@ impl Queryable for Mysql {
         .await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn version(&self) -> crate::Result<Option<String>> {
         let query = r#"SELECT @@GLOBAL.version version"#;
         let rows = super::timeout::socket(self.socket_timeout, self.query_raw(query, &[])).await?;

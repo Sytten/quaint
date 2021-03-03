@@ -237,6 +237,7 @@ pub struct Mssql {
 
 impl Mssql {
     /// Creates a new connection to SQL Server.
+    #[tracing::instrument(name = "new_connection", skip(url))]
     pub async fn new(url: MssqlUrl) -> crate::Result<Self> {
         let config = Config::from_jdbc_string(&url.connection_string)?;
         let tcp = TcpStream::connect_named(&config).await?;
@@ -276,16 +277,19 @@ impl Mssql {
 
 #[async_trait]
 impl Queryable for Mssql {
+    #[tracing::instrument(skip(self, q))]
     async fn query(&self, q: Query<'_>) -> crate::Result<ResultSet> {
         let (sql, params) = visitor::Mssql::build(q)?;
         self.query_raw(&sql, &params[..]).await
     }
 
+    #[tracing::instrument(skip(self, q))]
     async fn execute(&self, q: Query<'_>) -> crate::Result<u64> {
         let (sql, params) = visitor::Mssql::build(q)?;
         self.execute_raw(&sql, &params[..]).await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn query_raw(&self, sql: &str, params: &[Value<'_>]) -> crate::Result<ResultSet> {
         metrics::query("mssql.query_raw", sql, params, move || async move {
             let mut client = self.client.lock().await;
@@ -326,6 +330,7 @@ impl Queryable for Mssql {
         .await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn execute_raw(&self, sql: &str, params: &[Value<'_>]) -> crate::Result<u64> {
         metrics::query("mssql.execute_raw", sql, params, move || async move {
             let mut client = self.client.lock().await;
@@ -339,6 +344,7 @@ impl Queryable for Mssql {
         .await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn raw_cmd(&self, cmd: &str) -> crate::Result<()> {
         metrics::query("mssql.raw_cmd", cmd, &[], move || async move {
             let mut client = self.client.lock().await;
@@ -353,6 +359,7 @@ impl Queryable for Mssql {
         .await
     }
 
+    #[tracing::instrument(skip(self))]
     async fn version(&self) -> crate::Result<Option<String>> {
         let query = r#"SELECT @@VERSION AS version"#;
         let rows = self.query_raw(query, &[]).await?;
