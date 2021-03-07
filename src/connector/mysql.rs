@@ -114,6 +114,16 @@ impl MysqlUrl {
         self.query_params.socket_timeout
     }
 
+    /// The maximum connection lifetime
+    pub fn max_connection_lifetime(&self) -> Option<Duration> {
+        self.query_params.max_connection_lifetime
+    }
+
+    /// The maximum idle connection lifetime
+    pub fn max_idle_connection_lifetime(&self) -> Option<Duration> {
+        self.query_params.max_idle_connection_lifetime
+    }
+
     fn parse_query_params(url: &Url) -> Result<MysqlUrlQueryParams, Error> {
         let mut ssl_opts = my::SslOpts::default();
         ssl_opts = ssl_opts.with_danger_accept_invalid_certs(true);
@@ -124,6 +134,8 @@ impl MysqlUrl {
         let mut socket_timeout = None;
         let mut connect_timeout = Some(Duration::from_secs(5));
         let mut pool_timeout = Some(Duration::from_secs(5));
+        let mut max_connection_lifetime = None;
+        let mut max_idle_connection_lifetime = None;
 
         for (k, v) in url.query_pairs() {
             match k.as_ref() {
@@ -195,6 +207,28 @@ impl MysqlUrl {
                         }
                     };
                 }
+                "max_connection_lifetime" => {
+                    let as_int = v
+                        .parse()
+                        .map_err(|_| Error::builder(ErrorKind::InvalidConnectionArguments).build())?;
+
+                    if as_int == 0 {
+                        max_connection_lifetime = None;
+                    } else {
+                        max_connection_lifetime = Some(Duration::from_secs(as_int));
+                    }
+                }
+                "max_idle_connection_lifetime" => {
+                    let as_int = v
+                        .parse()
+                        .map_err(|_| Error::builder(ErrorKind::InvalidConnectionArguments).build())?;
+
+                    if as_int == 0 {
+                        max_idle_connection_lifetime = None;
+                    } else {
+                        max_idle_connection_lifetime = Some(Duration::from_secs(as_int));
+                    }
+                }
                 _ => {
                     #[cfg(not(feature = "tracing-log"))]
                     trace!("Discarding connection string param: {}", k);
@@ -212,6 +246,8 @@ impl MysqlUrl {
             connect_timeout,
             socket_timeout,
             pool_timeout,
+            max_connection_lifetime,
+            max_idle_connection_lifetime,
         })
     }
 
@@ -255,6 +291,8 @@ pub(crate) struct MysqlUrlQueryParams {
     socket_timeout: Option<Duration>,
     connect_timeout: Option<Duration>,
     pool_timeout: Option<Duration>,
+    max_connection_lifetime: Option<Duration>,
+    max_idle_connection_lifetime: Option<Duration>,
 }
 
 impl Mysql {
