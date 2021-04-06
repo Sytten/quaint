@@ -1,7 +1,7 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/connector/mssql.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mssql.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/connector/mssql.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mssql.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
 <link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../quaint/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../quaint/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -488,6 +488,65 @@
 <span id="485">485</span>
 <span id="486">486</span>
 <span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">mod</span> <span class="ident">conversion</span>;
 <span class="kw">mod</span> <span class="ident">error</span>;
@@ -530,9 +589,9 @@
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">EncryptMode</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="self">Self</span>::<span class="ident">On</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;true&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">Off</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;false&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">DangerPlainText</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;DANGER_PLAINTEXT&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">On</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;true&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">Off</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;false&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">DangerPlainText</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;DANGER_PLAINTEXT&quot;</span>),
         }
     }
 }
@@ -566,6 +625,8 @@
     <span class="ident">connect_timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
     <span class="ident">pool_timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
     <span class="ident">transaction_isolation_level</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IsolationLevel</span><span class="op">&gt;</span>,
+    <span class="ident">max_connection_lifetime</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
+    <span class="ident">max_idle_connection_lifetime</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>)]</span>
@@ -586,11 +647,11 @@
 <span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">IsolationLevel</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="kw">match</span> <span class="self">self</span> {
-            <span class="self">Self</span>::<span class="ident">ReadUncommitted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;READ UNCOMMITTED&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">ReadCommitted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;READ COMMITTED&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">RepeatableRead</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;REPEATABLE READ&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">Snapshot</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;SNAPSHOT&quot;</span>),
-            <span class="self">Self</span>::<span class="ident">Serializable</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;SERIALIZABLE&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">ReadUncommitted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;READ UNCOMMITTED&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">ReadCommitted</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;READ COMMITTED&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">RepeatableRead</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;REPEATABLE READ&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">Snapshot</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;SNAPSHOT&quot;</span>),
+            <span class="self">Self</span>::<span class="ident">Serializable</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;SERIALIZABLE&quot;</span>),
         }
     }
 }
@@ -606,7 +667,7 @@
             <span class="string">&quot;SNAPSHOT&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="self">Self</span>::<span class="ident">Snapshot</span>),
             <span class="string">&quot;SERIALIZABLE&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="self">Self</span>::<span class="ident">Serializable</span>),
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="ident">ErrorKind</span>::<span class="ident">database_url_is_invalid</span>(<span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Invalid isolation level `{}`&quot;</span>, <span class="ident">s</span>));
+                <span class="kw">let</span> <span class="ident">kind</span> <span class="op">=</span> <span class="ident">ErrorKind</span>::<span class="ident">database_url_is_invalid</span>(<span class="macro">format!</span>(<span class="string">&quot;Invalid isolation level `{}`&quot;</span>, <span class="ident">s</span>));
 
                 <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">builder</span>(<span class="ident">kind</span>).<span class="ident">build</span>())
             }
@@ -677,6 +738,16 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">connection_string</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">connection_string</span>
     }
+
+    <span class="doccomment">/// The maximum connection lifetime</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">max_connection_lifetime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">query_params</span>.<span class="ident">max_connection_lifetime</span>()
+    }
+
+    <span class="doccomment">/// The maximum idle connection lifetime</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">max_idle_connection_lifetime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">query_params</span>.<span class="ident">max_idle_connection_lifetime</span>()
+    }
 }
 
 <span class="kw">impl</span> <span class="ident">MssqlQueryParams</span> {
@@ -715,6 +786,14 @@
     <span class="kw">fn</span> <span class="ident">pool_timeout</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">pool_timeout</span>
     }
+
+    <span class="kw">fn</span> <span class="ident">max_connection_lifetime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">max_connection_lifetime</span>
+    }
+
+    <span class="kw">fn</span> <span class="ident">max_idle_connection_lifetime</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Duration</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">max_idle_connection_lifetime</span>
+    }
 }
 
 <span class="doccomment">/// A connector interface for the SQL Server database.</span>
@@ -728,6 +807,7 @@
 
 <span class="kw">impl</span> <span class="ident">Mssql</span> {
     <span class="doccomment">/// Creates a new connection to SQL Server.</span>
+    <span class="attribute">#[<span class="ident">tracing</span>::<span class="ident">instrument</span>(<span class="ident">name</span> <span class="op">=</span> <span class="string">&quot;new_connection&quot;</span>, <span class="ident">skip</span>(<span class="ident">url</span>))]</span>
     <span class="kw">pub</span> <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">url</span>: <span class="ident">MssqlUrl</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">config</span> <span class="op">=</span> <span class="ident">Config</span>::<span class="ident">from_jdbc_string</span>(<span class="kw-2">&amp;</span><span class="ident">url</span>.<span class="ident">connection_string</span>)<span class="question-mark">?</span>;
         <span class="kw">let</span> <span class="ident">tcp</span> <span class="op">=</span> <span class="ident">TcpStream</span>::<span class="ident">connect_named</span>(<span class="kw-2">&amp;</span><span class="ident">config</span>).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -757,7 +837,7 @@
         };
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">isolation</span>) <span class="op">=</span> <span class="ident">this</span>.<span class="ident">url</span>.<span class="ident">transaction_isolation_level</span>() {
-            <span class="ident">this</span>.<span class="ident">raw_cmd</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;SET TRANSACTION ISOLATION LEVEL {}&quot;</span>, <span class="ident">isolation</span>))
+            <span class="ident">this</span>.<span class="ident">raw_cmd</span>(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;SET TRANSACTION ISOLATION LEVEL {}&quot;</span>, <span class="ident">isolation</span>))
                 .<span class="kw">await</span><span class="question-mark">?</span>;
         };
 
@@ -777,6 +857,7 @@
         <span class="self">self</span>.<span class="ident">execute_raw</span>(<span class="kw-2">&amp;</span><span class="ident">sql</span>, <span class="kw-2">&amp;</span><span class="ident">params</span>[..]).<span class="kw">await</span>
     }
 
+    <span class="attribute">#[<span class="ident">tracing</span>::<span class="ident">instrument</span>(<span class="ident">skip</span>(<span class="self">self</span>, <span class="ident">params</span>))]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">query_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sql</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span>[<span class="ident">Value</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ResultSet</span><span class="op">&gt;</span> {
         <span class="ident">metrics</span>::<span class="ident">query</span>(<span class="string">&quot;mssql.query_raw&quot;</span>, <span class="ident">sql</span>, <span class="ident">params</span>, <span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="kw">async</span> <span class="kw">move</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">client</span>.<span class="ident">lock</span>().<span class="kw">await</span>;
@@ -817,6 +898,7 @@
         .<span class="kw">await</span>
     }
 
+    <span class="attribute">#[<span class="ident">tracing</span>::<span class="ident">instrument</span>(<span class="ident">skip</span>(<span class="self">self</span>, <span class="ident">params</span>))]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">execute_raw</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">sql</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">params</span>: <span class="kw-2">&amp;</span>[<span class="ident">Value</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span> {
         <span class="ident">metrics</span>::<span class="ident">query</span>(<span class="string">&quot;mssql.execute_raw&quot;</span>, <span class="ident">sql</span>, <span class="ident">params</span>, <span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="kw">async</span> <span class="kw">move</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">client</span>.<span class="ident">lock</span>().<span class="kw">await</span>;
@@ -830,6 +912,7 @@
         .<span class="kw">await</span>
     }
 
+    <span class="attribute">#[<span class="ident">tracing</span>::<span class="ident">instrument</span>(<span class="ident">skip</span>(<span class="self">self</span>))]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">raw_cmd</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">cmd</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="ident">metrics</span>::<span class="ident">query</span>(<span class="string">&quot;mssql.raw_cmd&quot;</span>, <span class="ident">cmd</span>, <span class="kw-2">&amp;</span>[], <span class="kw">move</span> <span class="op">|</span><span class="op">|</span> <span class="kw">async</span> <span class="kw">move</span> {
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">client</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">client</span>.<span class="ident">lock</span>().<span class="kw">await</span>;
@@ -844,6 +927,7 @@
         .<span class="kw">await</span>
     }
 
+    <span class="attribute">#[<span class="ident">tracing</span>::<span class="ident">instrument</span>(<span class="ident">skip</span>(<span class="self">self</span>))]</span>
     <span class="kw">async</span> <span class="kw">fn</span> <span class="ident">version</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">crate</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span> {
         <span class="kw">let</span> <span class="ident">query</span> <span class="op">=</span> <span class="string">r#&quot;SELECT @@VERSION AS version&quot;#</span>;
         <span class="kw">let</span> <span class="ident">rows</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">query_raw</span>(<span class="ident">query</span>, <span class="kw-2">&amp;</span>[]).<span class="kw">await</span><span class="question-mark">?</span>;
@@ -875,7 +959,7 @@
         <span class="kw">if</span> <span class="ident">input</span>.<span class="ident">starts_with</span>(<span class="string">&quot;jdbc:sqlserver&quot;</span>) {
             <span class="ident">input</span>.<span class="ident">into</span>()
         } <span class="kw">else</span> {
-            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;jdbc:{}&quot;</span>, <span class="ident">input</span>)
+            <span class="macro">format!</span>(<span class="string">&quot;jdbc:{}&quot;</span>, <span class="ident">input</span>)
         }
     }
 
@@ -883,7 +967,7 @@
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">conn</span> <span class="op">=</span> <span class="ident">JdbcString</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">with_jdbc_prefix</span>(<span class="ident">input</span>))<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">host</span> <span class="op">=</span> <span class="ident">conn</span>.<span class="ident">server_name</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">server_name</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">conn</span>.<span class="ident">instance_name</span>() {
-            <span class="prelude-val">Some</span>(<span class="ident">instance_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">r#&quot;{}\{}&quot;#</span>, <span class="ident">server_name</span>, <span class="ident">instance_name</span>),
+            <span class="prelude-val">Some</span>(<span class="ident">instance_name</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">format!</span>(<span class="string">r#&quot;{}\{}&quot;#</span>, <span class="ident">server_name</span>, <span class="ident">instance_name</span>),
             <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">server_name</span>.<span class="ident">to_string</span>(),
         });
 
@@ -894,17 +978,25 @@
         <span class="kw">let</span> <span class="ident">database</span> <span class="op">=</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;database&quot;</span>).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;master&quot;</span>));
         <span class="kw">let</span> <span class="ident">schema</span> <span class="op">=</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;schema&quot;</span>).<span class="ident">unwrap_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;dbo&quot;</span>));
 
-        <span class="kw">let</span> <span class="ident">connection_limit</span> <span class="op">=</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;connectionlimit&quot;</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>()).<span class="ident">transpose</span>()<span class="question-mark">?</span>;
+        <span class="kw">let</span> <span class="ident">connection_limit</span> <span class="op">=</span> <span class="ident">props</span>
+            .<span class="ident">remove</span>(<span class="string">&quot;connectionlimit&quot;</span>)
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;connection_limit&quot;</span>))
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>())
+            .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="ident">transaction_isolation_level</span> <span class="op">=</span> <span class="ident">props</span>
             .<span class="ident">remove</span>(<span class="string">&quot;isolationlevel&quot;</span>)
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;isolation_level&quot;</span>))
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">level</span><span class="op">|</span> <span class="ident">IsolationLevel</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">level</span>))
             .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">connect_timeout</span> <span class="op">=</span> <span class="ident">props</span>
             .<span class="ident">remove</span>(<span class="string">&quot;logintimeout&quot;</span>)
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;login_timeout&quot;</span>))
             .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;connecttimeout&quot;</span>))
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;connect_timeout&quot;</span>))
             .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;connectiontimeout&quot;</span>))
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;connection_timeout&quot;</span>))
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>().<span class="ident">map</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>))
             .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
 
@@ -916,17 +1008,19 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pool_timeout</span> <span class="op">=</span> <span class="ident">props</span>
             .<span class="ident">remove</span>(<span class="string">&quot;pooltimeout&quot;</span>)
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;pool_timeout&quot;</span>))
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>().<span class="ident">map</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>))
             .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
 
         <span class="kw">match</span> <span class="ident">pool_timeout</span> {
-            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">pool_timeout</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">5</span>)),
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">pool_timeout</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">10</span>)),
             <span class="prelude-val">Some</span>(<span class="ident">dur</span>) <span class="kw">if</span> <span class="ident">dur</span>.<span class="ident">as_secs</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">pool_timeout</span> <span class="op">=</span> <span class="prelude-val">None</span>,
             <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
         }
 
         <span class="kw">let</span> <span class="ident">socket_timeout</span> <span class="op">=</span> <span class="ident">props</span>
             .<span class="ident">remove</span>(<span class="string">&quot;sockettimeout&quot;</span>)
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;socket_timeout&quot;</span>))
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>().<span class="ident">map</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>))
             .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
 
@@ -938,9 +1032,31 @@
 
         <span class="kw">let</span> <span class="ident">trust_server_certificate</span> <span class="op">=</span> <span class="ident">props</span>
             .<span class="ident">remove</span>(<span class="string">&quot;trustservercertificate&quot;</span>)
+            .<span class="ident">or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="ident">props</span>.<span class="ident">remove</span>(<span class="string">&quot;trust_server_certificate&quot;</span>))
             .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>())
             .<span class="ident">transpose</span>()<span class="question-mark">?</span>
             .<span class="ident">unwrap_or</span>(<span class="bool-val">false</span>);
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">max_connection_lifetime</span> <span class="op">=</span> <span class="ident">props</span>
+            .<span class="ident">remove</span>(<span class="string">&quot;max_connection_lifetime&quot;</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>().<span class="ident">map</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>))
+            .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
+
+        <span class="kw">match</span> <span class="ident">max_connection_lifetime</span> {
+            <span class="prelude-val">Some</span>(<span class="ident">dur</span>) <span class="kw">if</span> <span class="ident">dur</span>.<span class="ident">as_secs</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">max_connection_lifetime</span> <span class="op">=</span> <span class="prelude-val">None</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
+        }
+
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">max_idle_connection_lifetime</span> <span class="op">=</span> <span class="ident">props</span>
+            .<span class="ident">remove</span>(<span class="string">&quot;max_idle_connection_lifetime&quot;</span>)
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">param</span><span class="op">|</span> <span class="ident">param</span>.<span class="ident">parse</span>().<span class="ident">map</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>))
+            .<span class="ident">transpose</span>()<span class="question-mark">?</span>;
+
+        <span class="kw">match</span> <span class="ident">max_idle_connection_lifetime</span> {
+            <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">max_idle_connection_lifetime</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Duration</span>::<span class="ident">from_secs</span>(<span class="number">300</span>)),
+            <span class="prelude-val">Some</span>(<span class="ident">dur</span>) <span class="kw">if</span> <span class="ident">dur</span>.<span class="ident">as_secs</span>() <span class="op">=</span><span class="op">=</span> <span class="number">0</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">max_idle_connection_lifetime</span> <span class="op">=</span> <span class="prelude-val">None</span>,
+            <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> (),
+        }
 
         <span class="prelude-val">Ok</span>(<span class="ident">MssqlQueryParams</span> {
             <span class="ident">encrypt</span>,
@@ -956,6 +1072,8 @@
             <span class="ident">connect_timeout</span>,
             <span class="ident">pool_timeout</span>,
             <span class="ident">transaction_isolation_level</span>,
+            <span class="ident">max_connection_lifetime</span>,
+            <span class="ident">max_idle_connection_lifetime</span>,
         })
     }
 }
@@ -970,12 +1088,12 @@
         <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">CONN_STR</span>.<span class="ident">replace</span>(<span class="string">&quot;user=SA&quot;</span>, <span class="string">&quot;user=WRONG&quot;</span>);
 
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">Quaint</span>::<span class="ident">new</span>(<span class="ident">url</span>.<span class="ident">as_str</span>()).<span class="kw">await</span>;
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">res</span>.<span class="ident">is_err</span>());
+        <span class="macro">assert!</span>(<span class="ident">res</span>.<span class="ident">is_err</span>());
 
         <span class="kw">let</span> <span class="ident">err</span> <span class="op">=</span> <span class="ident">res</span>.<span class="ident">unwrap_err</span>();
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="macro">matches</span><span class="macro">!</span>(<span class="ident">err</span>.<span class="ident">kind</span>(), <span class="ident">ErrorKind</span>::<span class="ident">AuthenticationFailed</span> { <span class="ident">user</span> } <span class="kw">if</span> <span class="ident">user</span> <span class="op">=</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Name</span>::<span class="ident">available</span>(<span class="string">&quot;WRONG&quot;</span>)));
+        <span class="macro">assert!</span>(<span class="macro">matches!</span>(<span class="ident">err</span>.<span class="ident">kind</span>(), <span class="ident">ErrorKind</span>::<span class="ident">AuthenticationFailed</span> { <span class="ident">user</span> } <span class="kw">if</span> <span class="ident">user</span> <span class="op">=</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">Name</span>::<span class="ident">available</span>(<span class="string">&quot;WRONG&quot;</span>)));
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="quaint"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="quaint" data-search-js="../../../search-index.js"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
