@@ -56,8 +56,8 @@
 <span id="53">53</span>
 <span id="54">54</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Function</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">ast</span>::<span class="ident">Table</span>;
+<span class="kw">use</span> <span class="kw">super</span><span class="ident">::Function</span>;
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::ast::Table</span>;
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;docs&quot;</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;postgresql&quot;</span>)))]</span>
@@ -79,20 +79,20 @@
 <span class="doccomment">/// # async fn main() -&gt; Result&lt;(), quaint::error::Error&gt; {</span>
 <span class="doccomment">/// # let conn = Quaint::new_in_memory()?;</span>
 <span class="doccomment">/// let cte = Select::default()</span>
-<span class="doccomment">/// 	.value(val!(&quot;hello_world&quot;).alias(&quot;toto&quot;))</span>
-<span class="doccomment">/// 	.into_cte(&quot;one&quot;);</span>
+<span class="doccomment">///     .value(val!(&quot;hello_world&quot;).alias(&quot;toto&quot;))</span>
+<span class="doccomment">///     .into_cte(&quot;one&quot;);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let select = Select::from_table(&quot;one&quot;)</span>
-<span class="doccomment">/// 	.value(row_to_json(&quot;one&quot;, false))</span>
-<span class="doccomment">/// 	.with(cte);</span>
+<span class="doccomment">///     .value(row_to_json(&quot;one&quot;, false))</span>
+<span class="doccomment">///     .with(cte);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// let result = conn.select(select).await?;</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(</span>
-<span class="doccomment">/// 	Value::Json(Some(serde_json::json!({</span>
-<span class="doccomment">/// 		&quot;toto&quot;: &quot;hello_world&quot;</span>
-<span class="doccomment">/// 	}))),</span>
-<span class="doccomment">/// 	result.into_single().unwrap()[0]</span>
+<span class="doccomment">///     Value::Json(Some(serde_json::json!({</span>
+<span class="doccomment">///         &quot;toto&quot;: &quot;hello_world&quot;</span>
+<span class="doccomment">///     }))),</span>
+<span class="doccomment">///     result.into_single().unwrap()[0]</span>
 <span class="doccomment">/// );</span>
 <span class="doccomment">/// # Ok(())</span>
 <span class="doccomment">/// # }</span>

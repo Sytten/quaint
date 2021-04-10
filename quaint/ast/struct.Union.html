@@ -6,29 +6,29 @@
 statement, allowing duplicates.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">let</span> <span class="ident">s1</span> <span class="op">=</span> <span class="ident">Select</span>::<span class="ident">default</span>().<span class="ident">value</span>(<span class="number">1</span>);
-<span class="kw">let</span> <span class="ident">s2</span> <span class="op">=</span> <span class="ident">Select</span>::<span class="ident">default</span>().<span class="ident">value</span>(<span class="number">2</span>);
-<span class="kw">let</span> (<span class="ident">sql</span>, <span class="ident">params</span>) <span class="op">=</span> <span class="ident">Sqlite</span>::<span class="ident">build</span>(<span class="ident">Union</span>::<span class="ident">new</span>(<span class="ident">s1</span>).<span class="ident">all</span>(<span class="ident">s2</span>))<span class="question-mark">?</span>;
+<span class="kw">let</span> <span class="ident">s1</span> <span class="op">=</span> <span class="ident">Select::default</span>().<span class="ident">value</span>(<span class="number">1</span>);
+<span class="kw">let</span> <span class="ident">s2</span> <span class="op">=</span> <span class="ident">Select::default</span>().<span class="ident">value</span>(<span class="number">2</span>);
+<span class="kw">let</span> (<span class="ident">sql</span>, <span class="ident">params</span>) <span class="op">=</span> <span class="ident">Sqlite::build</span>(<span class="ident">Union::new</span>(<span class="ident">s1</span>).<span class="ident">all</span>(<span class="ident">s2</span>))<span class="question-mark">?</span>;
 
 <span class="macro">assert_eq!</span>(<span class="string">&quot;SELECT ? UNION ALL SELECT ?&quot;</span>, <span class="ident">sql</span>);
 
 <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[
-    <span class="ident">Value</span>::<span class="ident">from</span>(<span class="number">1</span>),
-    <span class="ident">Value</span>::<span class="ident">from</span>(<span class="number">2</span>)
+    <span class="ident">Value::from</span>(<span class="number">1</span>),
+    <span class="ident">Value::from</span>(<span class="number">2</span>)
 ], <span class="ident">params</span>);</pre></div>
 </div><h4 id="method.distinct" class="method"><code>pub fn <a href="#method.distinct" class="fnname">distinct</a>(self, q: <a class="struct" href="../../quaint/ast/struct.Select.html" title="struct quaint::ast::Select">Select</a>&lt;'a&gt;) -&gt; Self</code><a class="srclink" href="../../src/quaint/ast/union.rs.html#95-99" title="goto source code">[src]</a></h4><div class="docblock"><p>Creates a union with previous selection and the given <code>SELECT</code>
 statement, selecting only distinct values.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">let</span> <span class="ident">s1</span> <span class="op">=</span> <span class="ident">Select</span>::<span class="ident">default</span>().<span class="ident">value</span>(<span class="number">1</span>);
-<span class="kw">let</span> <span class="ident">s2</span> <span class="op">=</span> <span class="ident">Select</span>::<span class="ident">default</span>().<span class="ident">value</span>(<span class="number">2</span>);
-<span class="kw">let</span> (<span class="ident">sql</span>, <span class="ident">params</span>) <span class="op">=</span> <span class="ident">Sqlite</span>::<span class="ident">build</span>(<span class="ident">Union</span>::<span class="ident">new</span>(<span class="ident">s1</span>).<span class="ident">distinct</span>(<span class="ident">s2</span>))<span class="question-mark">?</span>;
+<span class="kw">let</span> <span class="ident">s1</span> <span class="op">=</span> <span class="ident">Select::default</span>().<span class="ident">value</span>(<span class="number">1</span>);
+<span class="kw">let</span> <span class="ident">s2</span> <span class="op">=</span> <span class="ident">Select::default</span>().<span class="ident">value</span>(<span class="number">2</span>);
+<span class="kw">let</span> (<span class="ident">sql</span>, <span class="ident">params</span>) <span class="op">=</span> <span class="ident">Sqlite::build</span>(<span class="ident">Union::new</span>(<span class="ident">s1</span>).<span class="ident">distinct</span>(<span class="ident">s2</span>))<span class="question-mark">?</span>;
 
 <span class="macro">assert_eq!</span>(<span class="string">&quot;SELECT ? UNION SELECT ?&quot;</span>, <span class="ident">sql</span>);
 
 <span class="macro">assert_eq!</span>(<span class="macro">vec!</span>[
-    <span class="ident">Value</span>::<span class="ident">from</span>(<span class="number">1</span>),
-    <span class="ident">Value</span>::<span class="ident">from</span>(<span class="number">2</span>)
+    <span class="ident">Value::from</span>(<span class="number">1</span>),
+    <span class="ident">Value::from</span>(<span class="number">2</span>)
 ], <span class="ident">params</span>);</pre></div>
 </div></div><h2 id="trait-implementations" class="small-section-header">Trait Implementations<a href="#trait-implementations" class="anchor"></a></h2><div id="trait-implementations-list"><h3 id="impl-Clone" class="impl"><code class="in-band">impl&lt;'a&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html" title="trait core::clone::Clone">Clone</a> for <a class="struct" href="../../quaint/ast/struct.Union.html" title="struct quaint::ast::Union">Union</a>&lt;'a&gt;</code><a href="#impl-Clone" class="anchor"></a><a class="srclink" href="../../src/quaint/ast/union.rs.html#23" title="goto source code">[src]</a></h3><div class="impl-items"><h4 id="method.clone" class="method hidden"><code>fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone" class="fnname">clone</a>(&amp;self) -&gt; <a class="struct" href="../../quaint/ast/struct.Union.html" title="struct quaint::ast::Union">Union</a>&lt;'a&gt;</code><a class="srclink" href="../../src/quaint/ast/union.rs.html#23" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
 </div><h4 id="method.clone_from" class="method hidden"><code>pub fn <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from" class="fnname">clone_from</a>(&amp;mut self, source: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.reference.html">&amp;</a>Self)</code><span class="since" title="Stable since Rust version 1.0.0">1.0.0</span><a class="srclink" href="https://doc.rust-lang.org/nightly/src/core/clone.rs.html#130" title="goto source code">[src]</a></h4><div class='docblock hidden'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>

@@ -10,8 +10,8 @@
 SQLite without schema information.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">let</span> <span class="ident">query</span>: <span class="ident">Insert</span> <span class="op">=</span> <span class="ident">Insert</span>::<span class="ident">single_into</span>(<span class="string">&quot;users&quot;</span>).<span class="ident">into</span>();
-<span class="kw">let</span> (<span class="ident">sql</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">Sqlite</span>::<span class="ident">build</span>(<span class="ident">query</span>.<span class="ident">on_conflict</span>(<span class="ident">OnConflict</span>::<span class="ident">DoNothing</span>))<span class="question-mark">?</span>;
+<span class="kw">let</span> <span class="ident">query</span>: <span class="ident">Insert</span> <span class="op">=</span> <span class="ident">Insert::single_into</span>(<span class="string">&quot;users&quot;</span>).<span class="ident">into</span>();
+<span class="kw">let</span> (<span class="ident">sql</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">Sqlite::build</span>(<span class="ident">query</span>.<span class="ident">on_conflict</span>(<span class="ident">OnConflict::DoNothing</span>))<span class="question-mark">?</span>;
 <span class="macro">assert_eq!</span>(<span class="string">&quot;INSERT OR IGNORE INTO `users` DEFAULT VALUES&quot;</span>, <span class="ident">sql</span>);</pre></div>
 <p>With Microsoft SQL server not supporting <code>IGNORE</code> in the <code>INSERT</code>
 statement, the <code>INSERT</code> is converted to a <code>MERGE</code> statement. For it to work
@@ -19,10 +19,10 @@ in a correct way, the table should know all unique indices of the actual table.<
 <p>In this example our <code>users</code> table holds one unique index for the <code>id</code> column.</p>
 
 <div class="example-wrap"><pre class="rust rust-example-rendered">
-<span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">Column</span>::<span class="ident">from</span>(<span class="string">&quot;id&quot;</span>).<span class="ident">table</span>(<span class="string">&quot;users&quot;</span>);
-<span class="kw">let</span> <span class="ident">table</span> <span class="op">=</span> <span class="ident">Table</span>::<span class="ident">from</span>(<span class="string">&quot;users&quot;</span>).<span class="ident">add_unique_index</span>(<span class="ident">id</span>.<span class="ident">clone</span>());
-<span class="kw">let</span> <span class="ident">query</span>: <span class="ident">Insert</span> <span class="op">=</span> <span class="ident">Insert</span>::<span class="ident">single_into</span>(<span class="ident">table</span>).<span class="ident">value</span>(<span class="ident">id</span>, <span class="number">1</span>).<span class="ident">into</span>();
-<span class="kw">let</span> (<span class="ident">sql</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">Mssql</span>::<span class="ident">build</span>(<span class="ident">query</span>.<span class="ident">on_conflict</span>(<span class="ident">OnConflict</span>::<span class="ident">DoNothing</span>))<span class="question-mark">?</span>;
+<span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="ident">Column::from</span>(<span class="string">&quot;id&quot;</span>).<span class="ident">table</span>(<span class="string">&quot;users&quot;</span>);
+<span class="kw">let</span> <span class="ident">table</span> <span class="op">=</span> <span class="ident">Table::from</span>(<span class="string">&quot;users&quot;</span>).<span class="ident">add_unique_index</span>(<span class="ident">id</span>.<span class="ident">clone</span>());
+<span class="kw">let</span> <span class="ident">query</span>: <span class="ident">Insert</span> <span class="op">=</span> <span class="ident">Insert::single_into</span>(<span class="ident">table</span>).<span class="ident">value</span>(<span class="ident">id</span>, <span class="number">1</span>).<span class="ident">into</span>();
+<span class="kw">let</span> (<span class="ident">sql</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">Mssql::build</span>(<span class="ident">query</span>.<span class="ident">on_conflict</span>(<span class="ident">OnConflict::DoNothing</span>))<span class="question-mark">?</span>;
 
 <span class="kw">let</span> <span class="ident">expected_sql</span> <span class="op">=</span> <span class="macro">indoc!</span>(
     <span class="string">&quot;
